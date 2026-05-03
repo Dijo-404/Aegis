@@ -26,6 +26,7 @@ export function VoiceCommander() {
   const { isTranscribing, transcribe } = useWhisper();
   const { analysis, loading: analyzing, explain, reset } = useTxExplainer();
   const walletAddress = useWalletStore((state) => state.address);
+  const isExternal = useWalletStore((state) => state.isExternal);
 
   const intent = useMemo(() => parseIntent(transcript), [transcript]);
   const preview = useMemo(() => buildTxPreview(intent), [intent]);
@@ -103,7 +104,7 @@ export function VoiceCommander() {
         setTransactionError("Unable to sign without a transaction payload.");
         return;
       }
-      const sig = await signAndBroadcast(transaction);
+      const sig = await signAndBroadcast(transaction, isExternal);
       setSignature(sig);
     } catch (error) {
       const message =

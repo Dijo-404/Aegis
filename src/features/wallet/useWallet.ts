@@ -11,6 +11,7 @@ type HistoryStatus = "idle" | "loading" | "ready" | "error";
 
 type WalletState = {
   address?: string;
+  isExternal: boolean;
   balance?: number;
   loading: boolean;
   error?: string;
@@ -18,6 +19,7 @@ type WalletState = {
   historyStatus: HistoryStatus;
   historyError?: string;
   create: () => Promise<void>;
+  connectExternal: () => Promise<void>;
   refreshBalance: () => Promise<void>;
   loadHistory: () => Promise<void>;
 };
@@ -26,6 +28,7 @@ const historyKey = (address: string) => `tx-history:${address}`;
 
 export const useWalletStore = create<WalletState>((set, get) => ({
   address: undefined,
+  isExternal: false,
   balance: undefined,
   loading: false,
   error: undefined,
@@ -38,6 +41,7 @@ export const useWalletStore = create<WalletState>((set, get) => ({
       const wallet = await createWallet();
       set({
         address: wallet.address,
+        isExternal: false,
         loading: false,
         history: [],
         historyStatus: "idle",
@@ -47,6 +51,29 @@ export const useWalletStore = create<WalletState>((set, get) => ({
     } catch (error) {
       const message =
         error instanceof Error ? error.message : "Failed to create wallet.";
+      set({ loading: false, error: message });
+    }
+  },
+  connectExternal: async () => {
+    set({ loading: true, error: undefined });
+    try {
+      if (!("solana" in window)) throw new Error("Phantom wallet not found.");
+      const provider = (window as any).solana;
+      if (!provider.isPhantom) throw new Error("Phantom wallet not found.");
+      
+      const response = await provider.connect();
+      set({
+        address: response.publicKey.toString(),
+        isExternal: true,
+        loading: false,
+        history: [],
+        historyStatus: "idle",
+      });
+      await get().refreshBalance();
+      await get().loadHistory();
+    } catch (error) {
+      const message =
+        error instanceof Error ? error.message : "Failed to connect external wallet.";
       set({ loading: false, error: message });
     }
   },

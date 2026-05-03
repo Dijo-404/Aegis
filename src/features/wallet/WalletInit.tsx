@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { SectionCard } from "../../components/SectionCard";
 import { useWalletStore } from "./useWallet";
 
@@ -24,8 +25,20 @@ export function WalletInit() {
   const historyStatus = useWalletStore((state) => state.historyStatus);
   const historyError = useWalletStore((state) => state.historyError);
   const create = useWalletStore((state) => state.create);
+  const connectExternal = useWalletStore((state) => state.connectExternal);
+  const isExternal = useWalletStore((state) => state.isExternal);
   const refreshBalance = useWalletStore((state) => state.refreshBalance);
   const loadHistory = useWalletStore((state) => state.loadHistory);
+
+  const [copied, setCopied] = useState(false);
+
+  const handleCopy = () => {
+    if (address) {
+      navigator.clipboard.writeText(address);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    }
+  };
 
   return (
     <SectionCard
@@ -37,11 +50,21 @@ export function WalletInit() {
         <div className="flex flex-col gap-3">
           <div className="rounded-xl border border-slate-200 bg-white/80 p-4">
             <p className="text-xs uppercase tracking-[0.3em] text-slate-500">
-              Address
+              Address {isExternal && "(Phantom)"}
             </p>
-            <p className="mt-2 text-lg font-semibold text-ink">
-              {formatAddress(address)}
-            </p>
+            <div className="mt-2 flex items-center gap-2">
+              <p className="text-lg font-semibold text-ink">
+                {formatAddress(address)}
+              </p>
+              {address && (
+                <button
+                  onClick={handleCopy}
+                  className="rounded-md bg-slate-100 px-2 py-1 text-xs font-medium text-slate-600 transition hover:bg-slate-200"
+                >
+                  {copied ? "Copied!" : "Copy"}
+                </button>
+              )}
+            </div>
           </div>
           <div className="rounded-xl border border-slate-200 bg-white/80 p-4">
             <p className="text-xs uppercase tracking-[0.3em] text-slate-500">
@@ -59,7 +82,14 @@ export function WalletInit() {
             onClick={() => void create()}
             disabled={loading}
           >
-            {loading ? "Creating wallet..." : "Create wallet"}
+            {loading ? "Processing..." : "Create local wallet"}
+          </button>
+          <button
+            className="rounded-xl border border-slate-200 bg-white/90 px-4 py-3 text-sm font-semibold text-ink transition hover:-translate-y-0.5"
+            onClick={() => void connectExternal()}
+            disabled={loading}
+          >
+            Connect Phantom
           </button>
           <button
             className="rounded-xl border border-slate-200 bg-white/90 px-4 py-3 text-sm font-semibold text-ink transition hover:-translate-y-0.5"

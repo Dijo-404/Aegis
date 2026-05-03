@@ -23,7 +23,14 @@ export async function buildTransfer(params: {
   return tx as Transaction;
 }
 
-export async function signAndBroadcast(tx: Transaction) {
+export async function signAndBroadcast(tx: Transaction, isExternal = false) {
+  if (isExternal) {
+    if (!("solana" in window)) throw new Error("Phantom wallet not found.");
+    const provider = (window as any).solana;
+    if (!provider.isPhantom) throw new Error("Phantom wallet not found.");
+    const { signature } = await provider.signAndSendTransaction(tx);
+    return signature as string;
+  }
   const signed = await wdk.sign(tx);
   const sig = await wdk.broadcast(signed);
   return sig as string;
