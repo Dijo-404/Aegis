@@ -4,16 +4,12 @@ const hexRegex = /^[0-9a-fA-F]+$/;
 const base64Regex = /^[A-Za-z0-9+/=]+$/;
 
 const decodeBase64 = (value: string) => {
-  if (typeof atob === "function") {
-    const binary = atob(value);
-    const bytes = new Uint8Array(binary.length);
-    for (let i = 0; i < binary.length; i += 1) {
-      bytes[i] = binary.charCodeAt(i);
-    }
-    return bytes;
+  const binary = atob(value);
+  const bytes = new Uint8Array(binary.length);
+  for (let i = 0; i < binary.length; i += 1) {
+    bytes[i] = binary.charCodeAt(i);
   }
-
-  return Uint8Array.from(Buffer.from(value, "base64"));
+  return bytes;
 };
 
 const decodeHex = (value: string) => {

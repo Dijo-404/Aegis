@@ -19,11 +19,12 @@
     "@solana/spl-token": "^0.4.6",
     "@solana/web3.js": "^1.98.0",
     "@tether/wdk": "file:./packages/wdk",
+    "buffer": "^6.0.3",
     "idb": "^8.0.0",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "react-router-dom": "^6.26.0",
-    "vectra": "^0.6.0",
+    "vectra": "^0.14.0",
     "zustand": "^4.5.5"
   },
   "devDependencies": {

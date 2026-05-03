@@ -17,4 +17,9 @@ export const router = createBrowserRouter([
       { path: "chat", element: <PortfolioChat /> },
     ],
   },
-]);
+], {
+  future: {
+    v7_startTransition: true,
+    v7_relativeSplatPath: true,
+  },
+});

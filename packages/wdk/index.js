@@ -22,7 +22,7 @@ const decodeBase64 = (value) => {
     }
     return bytes;
   }
-  return Uint8Array.from(Buffer.from(value, "base64"));
+  return Uint8Array.from(atob(value).split("").map(c => c.charCodeAt(0)));
 };
 
 const encodeBase64 = (value) => {
@@ -33,7 +33,7 @@ const encodeBase64 = (value) => {
     });
     return btoa(binary);
   }
-  return Buffer.from(value).toString("base64");
+  return btoa(String.fromCharCode.apply(null, value));
 };
 
 const loadKeypair = () => {
