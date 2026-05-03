@@ -146,17 +146,17 @@ const extractFromVersioned = (transaction: VersionedTransaction): TxDetails => {
   const accounts = new Set<string>();
   const instructionHex: string[] = [];
 
-  const message = transaction.message;
-  const accountKeys =
-    "getAccountKeys" in message
+  const message = transaction.message as any;
+  const accountKeys: any[] =
+    typeof message.getAccountKeys === "function"
       ? message.getAccountKeys().staticAccountKeys
-      : message.accountKeys;
-  const accountStrings = accountKeys.map((key) => key.toBase58());
+      : message.accountKeys || message.staticAccountKeys;
+  const accountStrings = accountKeys.map((key: any) => key.toBase58());
 
   for (const instruction of message.compiledInstructions) {
     const programId = accountStrings[instruction.programIdIndex] ?? "unknown";
     programIds.add(programId);
-    instruction.accountKeyIndexes.forEach((index) => {
+    instruction.accountKeyIndexes.forEach((index: number) => {
       const key = accountStrings[index];
       if (key) {
         accounts.add(key);
@@ -202,9 +202,9 @@ export const extractTransactionDetails = (
     };
   }
 
-  return "compiledInstructions" in transaction.message
-    ? extractFromVersioned(transaction)
-    : extractFromInstructions(transaction.instructions, walletAddress);
+  return "version" in transaction
+    ? extractFromVersioned(transaction as VersionedTransaction)
+    : extractFromInstructions((transaction as Transaction).instructions, walletAddress);
 };
 
 export const analyzeTransactionHeuristically = (details: TxDetails) =>
