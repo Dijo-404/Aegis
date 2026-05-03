@@ -23,24 +23,34 @@ export class LlamaCpp {
   }
 
   async generate({ prompt }) {
-    if (prompt.includes("You are a portfolio assistant")) {
-      const isQuestion = prompt.toLowerCase().includes("spend") || prompt.toLowerCase().includes("where");
-      return {
-        text: isQuestion
-          ? "Based on your local transaction history, you transferred SOL to standard Solana programs. The exact details depend on the sources provided."
-          : "I am your local portfolio assistant. Ask me questions about your transaction history.",
-      };
+    try {
+      const apiUrl = import.meta.env?.VITE_API_URL ?? 'http://localhost:3001';
+      const response = await fetch(`${apiUrl}/api/generate`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ prompt }),
+      });
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      const data = await response.json();
+      return { text: data.text };
+    } catch (e) {
+      console.error("Failed to hit local LLM backend:", e);
+      // Fallback to basic heuristic if backend is down
+      const flags = buildFlags(prompt);
+      const risk = flags.length >= 2 ? "danger" : flags.length === 1 ? "warning" : "safe";
+      const summary = risk === "safe"
+          ? "No obvious red flags detected. Review details before signing."
+          : "Potentially risky instructions found. Confirm intent before signing.";
+      
+      if (prompt.includes("You are a portfolio assistant")) {
+        return { text: "Backend is offline. Could not process your request." };
+      }
+      
+      return { text: JSON.stringify({ summary, risk, flags }) };
     }
-
-    const flags = buildFlags(prompt);
-    const risk =
-      flags.length >= 2 ? "danger" : flags.length === 1 ? "warning" : "safe";
-    const summary =
-      risk === "safe"
-        ? "No obvious red flags detected. Review details before signing."
-        : "Potentially risky instructions found. Confirm intent before signing.";
-    return {
-      text: JSON.stringify({ summary, risk, flags }),
-    };
   }
 }

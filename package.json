@@ -4,9 +4,12 @@
   "version": "0.1.0",
   "type": "module",
   "scripts": {
-    "dev": "vite",
+    "dev:frontend": "vite",
+    "dev:backend": "cd backend && node server.js",
+    "dev": "concurrently \"pnpm run dev:frontend\" \"pnpm run dev:backend\"",
     "build": "vite build",
     "preview": "vite preview",
+    "start": "concurrently \"pnpm run preview\" \"pnpm run dev:backend\"",
     "test": "vitest",
     "models:download": "bash scripts/download-models.sh"
   },
