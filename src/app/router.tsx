@@ -5,21 +5,24 @@ import { SignGuard } from "../features/sign-guard/SignGuard";
 import { VoiceCommander } from "../features/voice-commander/VoiceCommander";
 import { PortfolioChat } from "../features/portfolio-brain/PortfolioChat";
 
-export const router = createBrowserRouter([
+export const router = createBrowserRouter(
+  [
+    {
+      path: "/",
+      element: <AppLayout />,
+      children: [
+        { index: true, element: <WalletInit /> },
+        { path: "wallet", element: <WalletInit /> },
+        { path: "sign", element: <SignGuard /> },
+        { path: "voice", element: <VoiceCommander /> },
+        { path: "chat", element: <PortfolioChat /> },
+      ],
+    },
+  ],
   {
-    path: "/",
-    element: <AppLayout />,
-    children: [
-      { index: true, element: <WalletInit /> },
-      { path: "wallet", element: <WalletInit /> },
-      { path: "sign", element: <SignGuard /> },
-      { path: "voice", element: <VoiceCommander /> },
-      { path: "chat", element: <PortfolioChat /> },
-    ],
+    future: {
+      v7_startTransition: true,
+      v7_relativeSplatPath: true,
+    },
   },
-], {
-  future: {
-    v7_startTransition: true,
-    v7_relativeSplatPath: true,
-  },
-});
+);

@@ -8,6 +8,11 @@ Sovereign, non-custodial Solana wallet with local-first AI: Sign Guard, Voice Co
 - pnpm
 - Modern browser with WebGPU or WebAssembly support
 
+## Documentation
+
+- [Architecture](./docs/architecture.md)
+- [Workflows](./docs/workflows.md)
+
 ## Setup
 
 ```bash
