@@ -171,3 +171,7 @@ Aegis/
 - Default network is devnet.
 - The bundled WDK package is a local devnet stub so installs work without private registry access.
 - QVAC SDK packages are stubbed locally for this repo; replace with official packages when you have registry access.
+
+## License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
