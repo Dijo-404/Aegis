@@ -1,5 +1,5 @@
-import { useState } from 'react';
-import { whisper } from '../../lib/qvac';
+import { useState } from "react";
+import { whisper } from "../../lib/qvac";
 
 export function useWhisper() {
   const [isTranscribing, setIsTranscribing] = useState(false);
@@ -8,9 +8,9 @@ export function useWhisper() {
     setIsTranscribing(true);
     try {
       const result = await whisper.transcribe(blob);
-      return result?.text ?? '';
+      return result?.text ?? "";
     } catch {
-      return '';
+      return "";
     } finally {
       setIsTranscribing(false);
     }

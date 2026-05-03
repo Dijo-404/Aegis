@@ -7,16 +7,18 @@
     "dev": "vite",
     "build": "vite build",
     "preview": "vite preview",
-    "test": "vitest"
+    "test": "vitest",
+    "models:download": "bash scripts/download-models.sh"
   },
   "dependencies": {
-    "@qvac/embed-llamacpp": "^0.1.0",
-    "@qvac/llm-llamacpp": "^0.1.0",
-    "@qvac/ocr-onnx": "^0.1.0",
-    "@qvac/sdk": "^0.1.0",
-    "@qvac/transcription-whispercpp": "^0.1.0",
+    "@qvac/embed-llamacpp": "file:./packages/qvac-embed-llamacpp",
+    "@qvac/llm-llamacpp": "file:./packages/qvac-llm-llamacpp",
+    "@qvac/ocr-onnx": "file:./packages/qvac-ocr-onnx",
+    "@qvac/sdk": "file:./packages/qvac-sdk",
+    "@qvac/transcription-whispercpp": "file:./packages/qvac-transcription-whispercpp",
+    "@solana/spl-token": "^0.4.6",
     "@solana/web3.js": "^1.98.0",
-    "@tether/wdk": "^0.1.0",
+    "@tether/wdk": "file:./packages/wdk",
     "idb": "^8.0.0",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
@@ -31,8 +33,10 @@
     "@vitejs/plugin-react": "^4.3.1",
     "autoprefixer": "^10.4.20",
     "postcss": "^8.4.41",
+    "prettier": "^3.8.3",
     "tailwindcss": "^3.4.10",
     "typescript": "^5.5.4",
+    "utf-8-validate": "^5.0.2",
     "vite": "^5.4.3",
     "vitest": "^2.0.5"
   }

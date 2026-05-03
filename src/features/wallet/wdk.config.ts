@@ -1,11 +1,12 @@
-import { WDK } from '@tether/wdk';
-import type { Transaction } from '@solana/web3.js';
+import { WDK } from "@tether/wdk";
+import type { Transaction } from "@solana/web3.js";
 
 export const wdk = new WDK({
-  network: 'solana',
-  rpcUrl: import.meta.env.VITE_SOLANA_RPC ?? 'https://api.devnet.solana.com',
-  storage: 'indexeddb',
+  network: "solana",
+  rpcUrl: import.meta.env.VITE_SOLANA_RPC ?? "https://api.devnet.solana.com",
+  storage: "indexeddb",
   nonCustodial: true,
+  usdtMint: import.meta.env.VITE_USDT_MINT,
 });
 
 export async function createWallet() {
@@ -16,7 +17,7 @@ export async function createWallet() {
 export async function buildTransfer(params: {
   to: string;
   amount: number;
-  token: 'SOL' | 'USDT';
+  token: "SOL" | "USDT";
 }) {
   const tx = await wdk.buildTransfer(params);
   return tx as Transaction;

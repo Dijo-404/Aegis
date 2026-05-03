@@ -1,5 +1,5 @@
 export type ParsedIntent = {
-  action: 'send' | 'swap' | 'stake' | 'query';
+  action: "send" | "swap" | "stake" | "query";
   amount?: number;
   token?: string;
   recipient?: string;
@@ -9,13 +9,16 @@ export type ParsedIntent = {
 export function parseIntent(text: string): ParsedIntent {
   const trimmed = text.trim();
   if (!trimmed) {
-    return { action: 'query', query: '' };
+    return { action: "query", query: "" };
   }
 
-  const sendMatch = /send\s+(\d+(?:\.\d+)?)\s+([a-zA-Z0-9]+)\s+to\s+([a-zA-Z0-9]+)/i.exec(trimmed);
+  const sendMatch =
+    /send\s+(\d+(?:\.\d+)?)\s+([a-zA-Z0-9]+)\s+to\s+([a-zA-Z0-9]+)/i.exec(
+      trimmed,
+    );
   if (sendMatch) {
     return {
-      action: 'send',
+      action: "send",
       amount: Number(sendMatch[1]),
       token: sendMatch[2].toUpperCase(),
       recipient: sendMatch[3],
@@ -23,8 +26,8 @@ export function parseIntent(text: string): ParsedIntent {
   }
 
   if (/balance|recent transactions|spent|spend/i.test(trimmed)) {
-    return { action: 'query', query: trimmed };
+    return { action: "query", query: trimmed };
   }
 
-  return { action: 'query', query: trimmed };
+  return { action: "query", query: trimmed };
 }

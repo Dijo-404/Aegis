@@ -1,4 +1,5 @@
 # Aegis — Build Plan
+
 > Sovereign, non-custodial Solana wallet where every AI feature runs locally. Zero telemetry. Zero cloud inference.
 
 ---
@@ -8,6 +9,7 @@
 **Tagline:** "The first AI-native Solana wallet where the intelligence is as non-custodial as the keys."
 
 **Hackathon Targets:**
+
 - Colosseum Frontier (main track) — submitted by May 11, 2026
 - Tether QVAC Side Track — $10,000 additional prize, same deadline
 
@@ -18,45 +20,50 @@
 ## 1. Tech Stack
 
 ### Frontend
-| Layer | Choice | Reason |
-|---|---|---|
-| Framework | React + TypeScript | Fastest for demo-quality UI |
-| Bundler | Vite | Fast HMR, small output |
-| Styling | Tailwind CSS + shadcn/ui | Polished UI without custom CSS overhead |
-| State | Zustand | Lightweight, no boilerplate |
-| Routing | React Router v6 | SPA routing for wallet views |
+
+| Layer     | Choice                   | Reason                                  |
+| --------- | ------------------------ | --------------------------------------- |
+| Framework | React + TypeScript       | Fastest for demo-quality UI             |
+| Bundler   | Vite                     | Fast HMR, small output                  |
+| Styling   | Tailwind CSS + shadcn/ui | Polished UI without custom CSS overhead |
+| State     | Zustand                  | Lightweight, no boilerplate             |
+| Routing   | React Router v6          | SPA routing for wallet views            |
 
 ### Blockchain Layer
-| Component | Choice | Reason |
-|---|---|---|
-| Wallet SDK | Tether WDK (`wdk.tether.io`) | Required for Tether side-track eligibility |
-| RPC | Solana web3.js v2 | Transaction construction, signing, broadcast |
-| Tx simulation | `@solana/transaction-confirmation` | Simulate before sign — feeds Sign Guard |
-| Token metadata | Metaplex `@metaplex-foundation/mpl-token-metadata` | Resolve token names for portfolio display |
-| Network | Mainnet-beta + Devnet toggle | Demo on devnet, mainnet-ready |
+
+| Component      | Choice                                             | Reason                                       |
+| -------------- | -------------------------------------------------- | -------------------------------------------- |
+| Wallet SDK     | Tether WDK (`wdk.tether.io`)                       | Required for Tether side-track eligibility   |
+| RPC            | Solana web3.js v2                                  | Transaction construction, signing, broadcast |
+| Tx simulation  | `@solana/transaction-confirmation`                 | Simulate before sign — feeds Sign Guard      |
+| Token metadata | Metaplex `@metaplex-foundation/mpl-token-metadata` | Resolve token names for portfolio display    |
+| Network        | Mainnet-beta + Devnet toggle                       | Demo on devnet, mainnet-ready                |
 
 ### AI Layer (QVAC SDK — all local)
-| Module | Package | Use in Aegis |
-|---|---|---|
-| LLM Inference | `@qvac/llm-llamacpp` | Sign Guard explanation + Portfolio Brain chat |
-| Embeddings | `@qvac/embed-llamacpp` | Tx history embedding → vector store |
-| OCR | `@qvac/ocr-onnx` | QR code + tx screenshot parsing |
-| Speech-to-Text | `@qvac/transcription-whispercpp` | Voice Commander input |
+
+| Module         | Package                          | Use in Aegis                                  |
+| -------------- | -------------------------------- | --------------------------------------------- |
+| LLM Inference  | `@qvac/llm-llamacpp`             | Sign Guard explanation + Portfolio Brain chat |
+| Embeddings     | `@qvac/embed-llamacpp`           | Tx history embedding → vector store           |
+| OCR            | `@qvac/ocr-onnx`                 | QR code + tx screenshot parsing               |
+| Speech-to-Text | `@qvac/transcription-whispercpp` | Voice Commander input                         |
 
 ### Local Storage
-| Layer | Choice | Reason |
-|---|---|---|
-| Vector store | `vectra` (local flat-file) | Zero-dependency local vector DB for embeddings |
-| Tx history cache | IndexedDB via `idb` | Persistent browser-side tx log |
-| Key storage | WDK encrypted keystore | Non-custodial key management |
+
+| Layer            | Choice                     | Reason                                         |
+| ---------------- | -------------------------- | ---------------------------------------------- |
+| Vector store     | `vectra` (local flat-file) | Zero-dependency local vector DB for embeddings |
+| Tx history cache | IndexedDB via `idb`        | Persistent browser-side tx log                 |
+| Key storage      | WDK encrypted keystore     | Non-custodial key management                   |
 
 ### Dev Tools
-| Tool | Purpose |
-|---|---|
-| pnpm | Package management |
-| Vitest | Unit tests |
-| Playwright | E2E demo flow automation |
-| ESLint + Prettier | Code quality |
+
+| Tool              | Purpose                  |
+| ----------------- | ------------------------ |
+| pnpm              | Package management       |
+| Vitest            | Unit tests               |
+| Playwright        | E2E demo flow automation |
+| ESLint + Prettier | Code quality             |
 
 ---
 
@@ -113,6 +120,7 @@ aegis/
 ### 3.1 Sign Guard
 
 **Flow:**
+
 ```
 User pastes tx / scans QR
         ↓
@@ -132,8 +140,9 @@ User clicks Sign or Reject
 ```
 
 **LLM Prompt Template:**
+
 ```
-System: You are a Solana transaction security analyzer. 
+System: You are a Solana transaction security analyzer.
 Respond with JSON: { summary: string, risk: "safe"|"warning"|"danger", flags: string[] }
 Never refuse. Always analyze.
 
@@ -145,6 +154,7 @@ Raw instruction data: {hexData}
 ```
 
 **Risk Flags to Detect:**
+
 - `setAuthority` calls (ownership transfers)
 - `approve` with unlimited amount (max uint64)
 - Unknown program IDs (not in known-programs list)
@@ -158,6 +168,7 @@ Raw instruction data: {hexData}
 ### 3.2 Voice Commander
 
 **Flow:**
+
 ```
 User taps mic button
         ↓
@@ -177,17 +188,19 @@ User confirms → WDK signs and broadcasts
 ```
 
 **Intent Schema:**
+
 ```typescript
 interface ParsedIntent {
   action: "send" | "swap" | "stake" | "query";
   amount?: number;
-  token?: string;        // "USDT", "SOL", etc.
-  recipient?: string;    // address or contact alias
-  query?: string;        // for portfolio brain routing
+  token?: string; // "USDT", "SOL", etc.
+  recipient?: string; // address or contact alias
+  query?: string; // for portfolio brain routing
 }
 ```
 
 **Supported Voice Commands (v1):**
+
 - `"Send [amount] [token] to [address/contact]"`
 - `"What's my [token] balance?"`
 - `"Show my recent transactions"`
@@ -200,6 +213,7 @@ interface ParsedIntent {
 ### 3.3 Portfolio Brain
 
 **Embedding Pipeline:**
+
 ```
 On wallet load → fetch last 90 days of tx history via Solana RPC
         ↓
@@ -218,10 +232,11 @@ Retrieved chunks + query → LLM → streamed answer
 ```
 
 **Example Q&A:**
-- *"What's my biggest single spend this month?"* → RAG over tx embeddings
-- *"How much have I paid in fees?"* → aggregate from retrieved chunks
-- *"Did I interact with any suspicious contracts?"* → cross-referenced against risk flags
-- *"Summarize my DeFi activity"* → top-K retrieval + LLM synthesis
+
+- _"What's my biggest single spend this month?"_ → RAG over tx embeddings
+- _"How much have I paid in fees?"_ → aggregate from retrieved chunks
+- _"Did I interact with any suspicious contracts?"_ → cross-referenced against risk flags
+- _"Summarize my DeFi activity"_ → top-K retrieval + LLM synthesis
 
 **Key Files:** `useEmbeddings.ts`, `vectorStore.ts`, `ragPipeline.ts`
 
@@ -230,37 +245,39 @@ Retrieved chunks + query → LLM → streamed answer
 ## 4. QVAC SDK Integration
 
 ### 4.1 Installation
+
 ```bash
 npm install @qvac/sdk @qvac/llm-llamacpp @qvac/embed-llamacpp \
             @qvac/ocr-onnx @qvac/transcription-whispercpp
 ```
 
 ### 4.2 SDK Singleton (`src/lib/qvac.ts`)
+
 ```typescript
-import { QVAC } from '@qvac/sdk';
-import { LlamaCpp } from '@qvac/llm-llamacpp';
-import { EmbedLlamaCpp } from '@qvac/embed-llamacpp';
-import { OcrOnnx } from '@qvac/ocr-onnx';
-import { WhisperCpp } from '@qvac/transcription-whispercpp';
+import { QVAC } from "@qvac/sdk";
+import { LlamaCpp } from "@qvac/llm-llamacpp";
+import { EmbedLlamaCpp } from "@qvac/embed-llamacpp";
+import { OcrOnnx } from "@qvac/ocr-onnx";
+import { WhisperCpp } from "@qvac/transcription-whispercpp";
 
 export const qvac = new QVAC();
 
 export const llm = new LlamaCpp({
-  modelPath: './public/models/llm/mistral-7b-q4.gguf',
+  modelPath: "./public/models/llm/mistral-7b-q4.gguf",
   contextSize: 4096,
   gpuLayers: 32, // Vulkan-accelerated
 });
 
 export const embedder = new EmbedLlamaCpp({
-  modelPath: './public/models/embed/nomic-embed-text-v1.5.gguf',
+  modelPath: "./public/models/embed/nomic-embed-text-v1.5.gguf",
 });
 
 export const ocr = new OcrOnnx({
-  modelPath: './public/models/ocr/',
+  modelPath: "./public/models/ocr/",
 });
 
 export const whisper = new WhisperCpp({
-  modelPath: './public/models/whisper/ggml-base.en.bin',
+  modelPath: "./public/models/whisper/ggml-base.en.bin",
 });
 
 export async function initQVAC() {
@@ -269,11 +286,12 @@ export async function initQVAC() {
   await embedder.load();
   await ocr.load();
   await whisper.load();
-  console.log('[QVAC] All models loaded locally.');
+  console.log("[QVAC] All models loaded locally.");
 }
 ```
 
 ### 4.3 Model Downloads (`scripts/download-models.sh`)
+
 ```bash
 #!/bin/bash
 mkdir -p public/models/{llm,embed,ocr,whisper}
@@ -297,12 +315,12 @@ wget -O public/models/whisper/ggml-base.en.bin \
 
 ```typescript
 // src/features/wallet/wdk.config.ts
-import { WDK } from '@tether/wdk';
+import { WDK } from "@tether/wdk";
 
 export const wdk = new WDK({
-  network: 'solana',
+  network: "solana",
   rpcUrl: import.meta.env.VITE_SOLANA_RPC,
-  storage: 'indexeddb',   // keys encrypted in browser
+  storage: "indexeddb", // keys encrypted in browser
   nonCustodial: true,
 });
 
@@ -316,7 +334,7 @@ export async function createWallet() {
 export async function buildTransfer(params: {
   to: string;
   amount: number;
-  token: 'SOL' | 'USDT';
+  token: "SOL" | "USDT";
 }) {
   const tx = await wdk.buildTransfer(params);
   // Pass to Sign Guard BEFORE signing
@@ -335,6 +353,7 @@ export async function signAndBroadcast(tx: Transaction) {
 ## 6. Day-by-Day Build Schedule
 
 ### Day 1 — Scaffolding
+
 - [ ] Init repo with Vite + React + TypeScript + Tailwind
 - [ ] Install all QVAC packages + WDK
 - [ ] Run `download-models.sh`, verify model loads
@@ -342,6 +361,7 @@ export async function signAndBroadcast(tx: Transaction) {
 - [ ] Basic routing: `/wallet`, `/sign`, `/voice`, `/chat`
 
 ### Day 2 — QVAC Init + Wallet Core
+
 - [ ] `qvac.ts` singleton with all 4 modules loading on app start
 - [ ] Loading screen while models initialize
 - [ ] WDK: create wallet, derive address, display balance
@@ -349,6 +369,7 @@ export async function signAndBroadcast(tx: Transaction) {
 - [ ] Store tx history in IndexedDB
 
 ### Day 3 — Sign Guard
+
 - [ ] `useOCR.ts`: feed image → `@qvac/ocr-onnx` → raw text
 - [ ] Tx deserializer: extract program IDs, token accounts, amounts
 - [ ] `useTxExplainer.ts`: structured context → LLM prompt → JSON response
@@ -356,6 +377,7 @@ export async function signAndBroadcast(tx: Transaction) {
 - [ ] Test with known malicious tx patterns (unlimited approve, ownership drain)
 
 ### Day 4 — Voice Commander
+
 - [ ] `useWhisper.ts`: mic capture → WAV blob → `@qvac/transcription-whispercpp` → transcript
 - [ ] `intentParser.ts`: regex parse → `{ action, amount, token, recipient }`
 - [ ] LLM fallback for ambiguous commands
@@ -363,17 +385,20 @@ export async function signAndBroadcast(tx: Transaction) {
 - [ ] Wire into Sign Guard flow (all voice txs go through analysis before signing)
 
 ### Day 5 — Portfolio Brain (Embeddings)
+
 - [ ] `useEmbeddings.ts`: tx history → natural language chunks → `@qvac/embed-llamacpp` → vectors
 - [ ] `vectorStore.ts`: Vectra local index, cosine similarity search, persist to IndexedDB
 - [ ] Embedding pipeline runs in background after wallet loads (non-blocking)
 - [ ] Progress indicator: "Indexing your wallet history..."
 
 ### Day 6 — Portfolio Brain (RAG Chat)
+
 - [ ] `ragPipeline.ts`: query → embed → top-K retrieval → LLM with context → streamed response
 - [ ] `PortfolioChat.tsx`: chat UI with streaming tokens, source citations (which txs)
 - [ ] Test: spending summaries, fee analysis, suspicious contract flagging
 
 ### Day 7 — Integration + Polish
+
 - [ ] Full flow test: Voice → Sign Guard → Portfolio Brain, no regressions
 - [ ] Offline stress test: disable network, verify all AI features still work
 - [ ] Error states: model not loaded, mic denied, OCR failed
@@ -381,6 +406,7 @@ export async function signAndBroadcast(tx: Transaction) {
 - [ ] Performance: check LLM response latency, add streaming where missing
 
 ### Day 8 — Demo + Submission
+
 - [ ] Record 3-minute demo video (3 acts: Sign Guard, Voice, Portfolio Chat)
 - [ ] Write README: setup, model download, run instructions
 - [ ] GitHub: clean commits, descriptive README, demo gif in README
@@ -403,14 +429,14 @@ VITE_QVAC_LOG_LEVEL=warn
 
 ## 8. Known Risks + Mitigations
 
-| Risk | Likelihood | Mitigation |
-|---|---|---|
-| Model download size (~5GB total) | High | Ship `download-models.sh`, document in README, cache in `public/models/` |
-| LLM cold start latency (first inference) | High | Warm up on app load, show progress, stream tokens |
-| Whisper accuracy on accented speech | Medium | Use `ggml-base.en` for speed, add manual correction UI |
-| WDK API surface differs from docs | Medium | Read WDK source, have web3.js fallback for signing |
-| OCR fails on low-res QR scans | Low | Add image preprocessing (contrast boost) before OCR |
-| Vulkan not available on all test machines | Low | QVAC falls back to CPU; note GPU requirement in README |
+| Risk                                      | Likelihood | Mitigation                                                               |
+| ----------------------------------------- | ---------- | ------------------------------------------------------------------------ |
+| Model download size (~5GB total)          | High       | Ship `download-models.sh`, document in README, cache in `public/models/` |
+| LLM cold start latency (first inference)  | High       | Warm up on app load, show progress, stream tokens                        |
+| Whisper accuracy on accented speech       | Medium     | Use `ggml-base.en` for speed, add manual correction UI                   |
+| WDK API surface differs from docs         | Medium     | Read WDK source, have web3.js fallback for signing                       |
+| OCR fails on low-res QR scans             | Low        | Add image preprocessing (contrast boost) before OCR                      |
+| Vulkan not available on all test machines | Low        | QVAC falls back to CPU; note GPU requirement in README                   |
 
 ---
 

@@ -30,7 +30,7 @@ Before you sign any transaction, Aegis analyzes it.
 
 You paste a transaction payload or scan a QR code. QVAC's OCR engine (`@qvac/ocr-onnx`) extracts the raw data. A local LLM (`@qvac/llm-llamacpp`) decodes exactly what the transaction is asking — in plain English.
 
-*"This contract is requesting unlimited approval to spend your USDT. This is a common pattern in phishing attacks."*
+_"This contract is requesting unlimited approval to spend your USDT. This is a common pattern in phishing attacks."_
 
 Risk is color-coded: **Safe**, **Warning**, or **Danger**. You see the flags. You decide. The analysis never left your device.
 
@@ -40,7 +40,7 @@ This is not a novelty feature. Approval phishing was responsible for over $1 bil
 
 Talk to your wallet.
 
-Hold the mic button and say: *"Send 20 USDT to 9xK3..."*
+Hold the mic button and say: _"Send 20 USDT to 9xK3..."_
 
 `@qvac/transcription-whispercpp` transcribes your speech locally — no audio ever reaches a server. The transcript is parsed into a structured intent (`action: send, amount: 20, token: USDT, recipient: 9xK3...`), a Solana transfer instruction is constructed via WDK, and it's routed through Sign Guard before you confirm.
 
@@ -54,7 +54,7 @@ Your wallet history, embedded and queryable.
 
 When Aegis loads, it fetches your last 90 days of on-chain activity, converts each transaction into a natural language description, and generates embeddings via `@qvac/embed-llamacpp`. These vectors live in a local index on your device.
 
-When you ask a question — *"What did I spend on gas fees this month?"* or *"Have I interacted with any unknown programs?"* — Aegis retrieves the most relevant transactions semantically, feeds them as context to the local LLM, and streams back a grounded, accurate answer.
+When you ask a question — _"What did I spend on gas fees this month?"_ or _"Have I interacted with any unknown programs?"_ — Aegis retrieves the most relevant transactions semantically, feeds them as context to the local LLM, and streams back a grounded, accurate answer.
 
 This is RAG (Retrieval-Augmented Generation) running entirely offline. No financial data leaves your machine. Your spending patterns are not a product someone else is selling.
 
@@ -90,17 +90,17 @@ QVAC is that SDK. Aegis is the proof.
 
 ## Technical Summary
 
-| Component | Technology |
-|---|---|
-| Wallet SDK | Tether WDK |
-| Blockchain | Solana (web3.js v2) |
-| LLM Inference | `@qvac/llm-llamacpp` (Mistral 7B Q4) |
-| Embeddings | `@qvac/embed-llamacpp` (Nomic Embed v1.5) |
-| OCR | `@qvac/ocr-onnx` |
+| Component      | Technology                                      |
+| -------------- | ----------------------------------------------- |
+| Wallet SDK     | Tether WDK                                      |
+| Blockchain     | Solana (web3.js v2)                             |
+| LLM Inference  | `@qvac/llm-llamacpp` (Mistral 7B Q4)            |
+| Embeddings     | `@qvac/embed-llamacpp` (Nomic Embed v1.5)       |
+| OCR            | `@qvac/ocr-onnx`                                |
 | Speech-to-Text | `@qvac/transcription-whispercpp` (Whisper Base) |
-| Vector Store | Vectra (local flat-file, IndexedDB-backed) |
-| Frontend | React + TypeScript + Tailwind |
-| Runtime | Browser / Electron (cross-platform) |
+| Vector Store   | Vectra (local flat-file, IndexedDB-backed)      |
+| Frontend       | React + TypeScript + Tailwind                   |
+| Runtime        | Browser / Electron (cross-platform)             |
 
 ---
 

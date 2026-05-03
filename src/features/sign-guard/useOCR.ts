@@ -1,5 +1,5 @@
-import { useState } from 'react';
-import { ocr } from '../../lib/qvac';
+import { useState } from "react";
+import { ocr } from "../../lib/qvac";
 
 export function useOCR() {
   const [isProcessing, setIsProcessing] = useState(false);
@@ -8,9 +8,9 @@ export function useOCR() {
     setIsProcessing(true);
     try {
       const result = await ocr.recognize(file);
-      return result?.text ?? '';
+      return result?.text ?? "";
     } catch {
-      return '';
+      return "";
     } finally {
       setIsProcessing(false);
     }

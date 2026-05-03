@@ -1,0 +1,11 @@
+{
+  "name": "@tether/wdk",
+  "version": "0.1.0",
+  "type": "module",
+  "main": "./index.js",
+  "types": "./index.d.ts",
+  "dependencies": {
+    "@solana/spl-token": "^0.4.6",
+    "@solana/web3.js": "^1.98.0"
+  }
+}
