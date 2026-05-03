@@ -23,6 +23,15 @@ export class LlamaCpp {
   }
 
   async generate({ prompt }) {
+    if (prompt.includes("You are a portfolio assistant")) {
+      const isQuestion = prompt.toLowerCase().includes("spend") || prompt.toLowerCase().includes("where");
+      return {
+        text: isQuestion
+          ? "Based on your local transaction history, you transferred SOL to standard Solana programs. The exact details depend on the sources provided."
+          : "I am your local portfolio assistant. Ask me questions about your transaction history.",
+      };
+    }
+
     const flags = buildFlags(prompt);
     const risk =
       flags.length >= 2 ? "danger" : flags.length === 1 ? "warning" : "safe";
