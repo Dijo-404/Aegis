@@ -149,12 +149,16 @@ export function useTxExplainer() {
 
       const summary =
         typeof parsed.summary === "string" ? parsed.summary : heuristic.summary;
-      const risk = (parsed.risk as TxRisk | undefined) ?? heuristic.risk;
+      const rawRisk = parsed.risk;
+      const risk: TxRisk =
+        rawRisk === "safe" || rawRisk === "warning" || rawRisk === "danger"
+          ? rawRisk
+          : heuristic.risk;
       const flagsFromLlm = Array.isArray(parsed.flags)
         ? (parsed.flags.filter((flag) => typeof flag === "string") as string[])
         : [];
       const combinedFlags = [...new Set([...flagsFromLlm, ...heuristic.flags])];
-      const finalRisk =
+      const finalRisk: TxRisk =
         riskOrder[heuristic.risk] > riskOrder[risk] ? heuristic.risk : risk;
 
       setAnalysis({

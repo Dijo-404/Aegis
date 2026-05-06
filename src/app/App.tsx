@@ -23,6 +23,13 @@ const statusTone: Record<AppStatus, string> = {
   error: "bg-rose-50 text-rose-700",
 };
 
+const statusDotTone: Record<AppStatus, string> = {
+  idle: "bg-amber-500",
+  loading: "bg-sky-500",
+  ready: "bg-emerald-500",
+  error: "bg-rose-500",
+};
+
 export function AppLayout() {
   const qvacStatus = useAppStore((state) => state.qvacStatus);
   const qvacError = useAppStore((state) => state.qvacError);
@@ -49,9 +56,9 @@ export function AppLayout() {
             </p>
           </div>
           <div className="float-in-delay flex items-center gap-3">
-            <span className="status-pill">
+            <span className={`status-pill ${statusTone[qvacStatus]}`}>
               <span
-                className={`h-2 w-2 rounded-full ${statusTone[qvacStatus]}`}
+                className={`h-2 w-2 rounded-full ${statusDotTone[qvacStatus]}`}
               ></span>
               {statusCopy[qvacStatus]}
             </span>

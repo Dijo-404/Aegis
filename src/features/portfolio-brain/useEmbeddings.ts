@@ -78,28 +78,38 @@ export function useEmbeddings() {
     }
 
     setStatus("indexing");
-    const store = await loadVectorStore(address);
-    store.records = [];
+    try {
+      const store = await loadVectorStore(address);
+      store.records = [];
 
-    const latestHistory = useWalletStore.getState().history;
-    setProgress({ current: 0, total: latestHistory.length });
-    for (let i = 0; i < latestHistory.length; i += 1) {
-      const item = latestHistory[i];
-      const embedding = await runEmbedder(item.description);
-      if (!embedding) {
-        continue;
+      const latestHistory = useWalletStore.getState().history;
+      setProgress({ current: 0, total: latestHistory.length });
+      for (let i = 0; i < latestHistory.length; i += 1) {
+        const item = latestHistory[i];
+        const embedding = await runEmbedder(item.description);
+        if (!embedding) {
+          continue;
+        }
+        await addToStore(store, {
+          id: item.signature,
+          text: item.description,
+          embedding,
+          metadata: { signature: item.signature, timestamp: item.timestamp },
+        });
+        setProgress({ current: i + 1, total: latestHistory.length });
       }
-      await addToStore(store, {
-        id: item.signature,
-        text: item.description,
-        embedding,
-        metadata: { signature: item.signature, timestamp: item.timestamp },
-      });
-      setProgress({ current: i + 1, total: latestHistory.length });
-    }
 
-    await saveVectorStore(address, store);
-    setStatus("ready");
+      await saveVectorStore(address, store);
+      setStatus("ready");
+    } catch (indexError) {
+      const message =
+        indexError instanceof Error
+          ? indexError.message
+          : "Failed to build embedding index.";
+      logger.warn("Embedding index build failed", indexError);
+      setError(message);
+      setStatus("idle");
+    }
   };
 
   return { status, buildIndex, progress, error };
