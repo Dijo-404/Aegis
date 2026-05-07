@@ -14,17 +14,19 @@ export function SectionCard({
   children,
 }: SectionCardProps) {
   return (
-    <section className="glass-panel">
+    <section className="stripe-card">
       <div className="flex flex-col gap-2">
-        {kicker && (
-          <p className="text-xs uppercase tracking-[0.3em] text-slate-500">
-            {kicker}
+        {kicker && <p className="stripe-kicker">{kicker}</p>}
+        <h2 className="text-subheading-lg tracking-subheading-lg text-heading">
+          {title}
+        </h2>
+        {description && (
+          <p className="text-base font-light leading-relaxed text-body">
+            {description}
           </p>
         )}
-        <h2 className="text-xl font-semibold text-ink">{title}</h2>
-        {description && <p className="text-sm text-slate-600">{description}</p>}
       </div>
-      <div className="mt-6">{children}</div>
+      <div className="mt-8">{children}</div>
     </section>
   );
 }

@@ -126,67 +126,81 @@ export function VoiceCommander() {
     <SectionCard
       kicker="Voice Commander"
       title="Speak your transaction"
-      description="Local speech-to-text and intent parsing routed into Sign Guard."
+      description="Local speech-to-text and intent parsing routed straight into Sign Guard."
     >
       <div className="grid gap-6 lg:grid-cols-[1.1fr_0.9fr]">
-        <div className="flex flex-col gap-4">
-          <label className="text-xs uppercase tracking-[0.3em] text-slate-500">
-            Transcript
-          </label>
+        <div className="flex flex-col gap-3">
+          <label className="stripe-label">Transcript</label>
           <textarea
-            className="min-h-[180px] rounded-2xl border border-slate-200 bg-white/90 p-4 text-sm text-ink focus:outline-none"
+            className="stripe-textarea min-h-[180px]"
             placeholder="Type or dictate: Send 20 USDT to 9xK3..."
             value={transcript}
             onChange={(event) => setTranscript(event.target.value)}
           />
-          <div className="flex flex-wrap items-center gap-3">
+          <div className="flex flex-wrap items-center gap-2">
             <button
-              className="rounded-xl bg-ink px-4 py-2 text-sm font-semibold text-white"
+              className={
+                isRecording
+                  ? "rounded bg-ruby px-4 py-2 text-base font-normal text-white transition-colors hover:bg-ruby/90 focus:outline-none focus:ring-2 focus:ring-ruby focus:ring-offset-2"
+                  : "stripe-btn-primary"
+              }
               onClick={isRecording ? stopRecording : startRecording}
               disabled={isTranscribing}
             >
-              {isRecording ? "Stop recording" : "Start recording"}
+              {isRecording ? (
+                <span className="inline-flex items-center gap-2">
+                  <span className="h-2 w-2 animate-pulse rounded-full bg-white" />
+                  Stop recording
+                </span>
+              ) : (
+                "Start recording"
+              )}
             </button>
             <button
-              className="rounded-xl border border-slate-200 bg-white px-4 py-2 text-sm font-semibold text-ink"
+              className="stripe-btn-neutral"
               onClick={buildAndAnalyze}
               disabled={analyzing}
             >
               {analyzing ? "Analyzing..." : "Analyze transfer"}
             </button>
             {intent.action === "query" && (
-              <button
-                className="rounded-xl border border-slate-200 bg-white px-4 py-2 text-sm font-semibold text-ink"
-                onClick={handlePortfolioQuery}
-              >
+              <button className="stripe-btn-ghost" onClick={handlePortfolioQuery}>
                 Ask Portfolio Brain
               </button>
             )}
           </div>
           {recordingError && (
-            <p className="text-sm text-rose-600">{recordingError}</p>
+            <p className="rounded border border-ruby/30 bg-ruby/5 px-3 py-2 text-sm font-light text-ruby">
+              {recordingError}
+            </p>
           )}
           {transactionError && (
-            <p className="text-sm text-rose-600">{transactionError}</p>
+            <p className="rounded border border-ruby/30 bg-ruby/5 px-3 py-2 text-sm font-light text-ruby">
+              {transactionError}
+            </p>
           )}
         </div>
-        <div className="rounded-2xl border border-slate-200 bg-white/90 p-5">
-          <p className="text-xs uppercase tracking-[0.3em] text-slate-500">
-            Parsed intent
+        <div className="rounded-md border border-border bg-white p-5 shadow-ambient">
+          <p className="stripe-kicker">Parsed intent</p>
+          <p className="mt-2 text-subheading tracking-subheading text-heading">
+            {preview.label}
           </p>
-          <p className="mt-2 text-lg font-semibold text-ink">{preview.label}</p>
-          <p className="mt-2 text-sm text-slate-600">{preview.details}</p>
+          <p className="mt-2 text-sm font-light leading-relaxed text-body">
+            {preview.details}
+          </p>
           {preview.warning && (
-            <p className="mt-3 text-sm text-amber-600">{preview.warning}</p>
+            <p className="mt-3 rounded border border-lemon/30 bg-lemon/5 px-3 py-2 text-sm font-light text-lemon">
+              {preview.warning}
+            </p>
           )}
         </div>
       </div>
 
       <div className="mt-6 grid gap-4 lg:grid-cols-[1.2fr_0.8fr]">
-        <div className="rounded-2xl border border-dashed border-slate-200 bg-white/80 p-5 text-sm text-slate-500">
+        <div className="stripe-dashed rounded-md bg-purple/[0.02] p-5 text-sm font-light text-body">
           {isTranscribing
             ? "Transcribing audio locally..."
-            : "Record a command to let Whisper produce the transcript, then analyze with Sign Guard."}
+            : "Record a command — Whisper produces the transcript, then Sign Guard reviews it."}
         </div>
         <div>
           {analysis ? (
@@ -196,21 +210,32 @@ export function VoiceCommander() {
               onReject={reset}
             />
           ) : (
-            <div className="rounded-2xl border border-dashed border-slate-200 bg-white/70 p-6 text-sm text-slate-500">
-              Build a transfer to see the Sign Guard verdict.
+            <div className="stripe-dashed flex min-h-[160px] flex-col items-center justify-center rounded-md bg-purple/[0.02] p-6 text-center">
+              <p className="stripe-kicker mb-1">No verdict yet</p>
+              <p className="text-sm font-light text-body">
+                Build a transfer to see the Sign Guard verdict.
+              </p>
             </div>
           )}
         </div>
       </div>
 
       {signature && (
-        <div className="mt-4 rounded-2xl border border-emerald-200 bg-emerald-50 p-4 text-sm text-emerald-700">
-          Transaction sent: {signature}
+        <div className="mt-4 flex items-start gap-3 rounded border border-success/40 bg-success/10 p-4">
+          <span className="mt-1.5 h-1.5 w-1.5 flex-none rounded-full bg-success" />
+          <div className="flex flex-col gap-0.5">
+            <p className="text-sm font-normal text-success-text">
+              Transaction sent
+            </p>
+            <p className="break-all font-mono text-xs tabular-nums text-success-text/80">
+              {signature}
+            </p>
+          </div>
         </div>
       )}
 
       {signing && (
-        <div className="mt-4 rounded-2xl border border-slate-200 bg-white/80 p-4 text-sm text-slate-500">
+        <div className="mt-4 rounded border border-border bg-white p-4 text-sm font-light text-body">
           Broadcasting transaction...
         </div>
       )}

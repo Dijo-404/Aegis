@@ -31,45 +31,45 @@ export function WalletInit() {
     <SectionCard
       kicker="Wallet Core"
       title="Non-custodial wallet"
-      description="Create a local WDK wallet and pull a live devnet balance."
+      description="Create a local WDK wallet and pull a live devnet balance — keys never leave the browser."
     >
       <div className="grid gap-6 lg:grid-cols-[1.1fr_0.9fr]">
         <div className="flex flex-col gap-3">
-          <div className="rounded-xl border border-slate-200 bg-white/80 p-4">
-            <p className="text-xs uppercase tracking-[0.3em] text-slate-500">
-              Address
-            </p>
-            <p className="mt-2 text-lg font-semibold text-ink">
+          <div className="rounded border border-border bg-white p-4">
+            <p className="stripe-kicker">Address</p>
+            <p className="mt-2 font-mono text-base font-medium tabular-nums text-heading">
               {formatAddress(address)}
             </p>
           </div>
-          <div className="rounded-xl border border-slate-200 bg-white/80 p-4">
-            <p className="text-xs uppercase tracking-[0.3em] text-slate-500">
-              Balance (SOL)
-            </p>
-            <p className="mt-2 text-lg font-semibold text-ink">
+          <div className="rounded border border-border bg-white p-4">
+            <p className="stripe-kicker">Balance · SOL</p>
+            <p className="mt-2 text-subheading tracking-subheading tabular-nums text-heading">
               {balance === undefined ? "—" : balance.toFixed(4)}
             </p>
           </div>
-          {error && <p className="text-sm text-rose-600">{error}</p>}
+          {error && (
+            <p className="rounded border border-ruby/30 bg-ruby/5 px-3 py-2 text-sm font-light text-ruby">
+              {error}
+            </p>
+          )}
         </div>
-        <div className="flex flex-col gap-3">
+        <div className="flex flex-col gap-2">
           <button
-            className="rounded-xl bg-ink px-4 py-3 text-sm font-semibold text-white transition hover:-translate-y-0.5"
+            className="stripe-btn-primary"
             onClick={() => void create()}
             disabled={loading}
           >
             {loading ? "Creating wallet..." : "Create wallet"}
           </button>
           <button
-            className="rounded-xl border border-slate-200 bg-white/90 px-4 py-3 text-sm font-semibold text-ink transition hover:-translate-y-0.5"
+            className="stripe-btn-ghost"
             onClick={() => void refreshBalance()}
             disabled={!address}
           >
             Refresh balance
           </button>
           <button
-            className="rounded-xl border border-slate-200 bg-white/90 px-4 py-3 text-sm font-semibold text-ink transition hover:-translate-y-0.5"
+            className="stripe-btn-neutral"
             onClick={() => void loadHistory()}
             disabled={!address || historyStatus === "loading"}
           >
@@ -77,40 +77,37 @@ export function WalletInit() {
               ? "Loading history..."
               : "Refresh history"}
           </button>
-          <p className="text-sm text-slate-600">
-            This is wired for devnet. Mainnet toggle will live next to the RPC
-            selector.
+          <p className="mt-1 text-sm font-light leading-relaxed text-body">
+            Wired for devnet. Mainnet toggle will live next to the RPC selector.
           </p>
         </div>
       </div>
 
-      <div className="mt-6 rounded-2xl border border-slate-200 bg-white/90 p-5">
+      <div className="mt-8 rounded-md border border-border bg-white p-5 shadow-ambient">
         <div className="flex items-center justify-between">
-          <p className="text-xs uppercase tracking-[0.3em] text-slate-500">
-            Recent activity
-          </p>
-          <span className="text-xs font-semibold uppercase text-slate-500">
+          <p className="stripe-kicker">Recent activity</p>
+          <span className="font-mono text-[11px] uppercase tracking-wider text-body">
             {historyStatus}
           </span>
         </div>
         {historyError && (
-          <p className="mt-2 text-sm text-rose-600">{historyError}</p>
+          <p className="mt-2 text-sm font-light text-ruby">{historyError}</p>
         )}
-        <div className="mt-3 space-y-3">
+        <div className="mt-4 space-y-2">
           {history.length === 0 && (
-            <p className="text-sm text-slate-500">
+            <p className="text-sm font-light text-body">
               No transactions found in the last 90 days.
             </p>
           )}
           {history.slice(0, 4).map((item) => (
             <div
               key={item.signature}
-              className="rounded-xl border border-slate-200 bg-white/70 p-3"
+              className="rounded border border-border bg-white px-4 py-3 transition-shadow hover:shadow-ambient"
             >
-              <p className="text-sm font-semibold text-ink">
+              <p className="text-sm font-normal text-heading">
                 {item.description}
               </p>
-              <p className="mt-1 text-xs text-slate-500">
+              <p className="mt-1 font-mono text-xs tabular-nums text-body">
                 {formatDate(item.timestamp)} · {item.signature.slice(0, 6)}...
                 {item.signature.slice(-4)}
               </p>
