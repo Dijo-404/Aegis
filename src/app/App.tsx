@@ -33,6 +33,8 @@ const statusDot: Record<AppStatus, string> = {
 export function AppLayout() {
   const qvacStatus = useAppStore((state) => state.qvacStatus);
   const qvacError = useAppStore((state) => state.qvacError);
+  const modelLoadProgress = useAppStore((state) => state.modelLoadProgress);
+  const modelLoadLabel = useAppStore((state) => state.modelLoadLabel);
   const initialize = useAppStore((state) => state.initialize);
 
   useEffect(() => {
@@ -86,7 +88,7 @@ export function AppLayout() {
               {statusCopy[qvacStatus]}
             </span>
             <span className="hidden text-xs font-normal text-body lg:inline">
-              Devnet
+              {import.meta.env.VITE_SOLANA_NETWORK ?? "mainnet-beta"}
             </span>
           </div>
         </div>
@@ -125,24 +127,47 @@ export function AppLayout() {
           </div>
 
           {qvacStatus !== "ready" && (
-            <section className="stripe-card-ambient flex items-start gap-4">
-              <span
-                className={`mt-1 h-2 w-2 flex-none rounded-full ${statusDot[qvacStatus]}`}
-              />
-              <div className="flex flex-col gap-1">
-                <p className="text-base font-normal text-heading">
-                  Local models are warming up.
-                </p>
-                <p className="text-sm font-light leading-relaxed text-body">
-                  Explore the UI while QVAC initializes. Once models are loaded,
-                  the AI flows activate instantly.
-                </p>
-                {qvacError && (
-                  <p className="mt-1 font-mono text-xs text-ruby">
-                    {qvacError}
+            <section className="stripe-card-ambient flex flex-col gap-3">
+              <div className="flex items-start gap-4">
+                <span
+                  className={`mt-1 h-2 w-2 flex-none rounded-full ${statusDot[qvacStatus]}`}
+                />
+                <div className="flex flex-col gap-1">
+                  <p className="text-base font-normal text-heading">
+                    {qvacStatus === "loading"
+                      ? "Downloading AI models — first run only."
+                      : qvacStatus === "error"
+                        ? "Model initialization failed."
+                        : "Preparing local models."}
                   </p>
-                )}
+                  <p className="text-sm font-light leading-relaxed text-body">
+                    {qvacStatus === "loading"
+                      ? "Whisper (~40 MB), MiniLM (~25 MB), and Qwen2.5 (~500 MB) are cached in your browser after this. AI features activate automatically when ready."
+                      : "AI features (Sign Guard LLM, Voice Commander, Portfolio Brain) activate once models finish loading."}
+                  </p>
+                  {qvacError && (
+                    <p className="mt-1 font-mono text-xs text-ruby">
+                      {qvacError}
+                    </p>
+                  )}
+                </div>
               </div>
+              {qvacStatus === "loading" && modelLoadProgress > 0 && (
+                <div className="flex flex-col gap-1.5">
+                  <div className="flex items-center justify-between">
+                    <p className="stripe-kicker">{modelLoadLabel}</p>
+                    <p className="font-mono text-xs tabular-nums text-body">
+                      {modelLoadProgress}%
+                    </p>
+                  </div>
+                  <div className="h-1 w-full overflow-hidden rounded-full bg-border">
+                    <div
+                      className="h-full rounded-full bg-purple transition-all duration-300"
+                      style={{ width: `${modelLoadProgress}%` }}
+                    />
+                  </div>
+                </div>
+              )}
             </section>
           )}
 
@@ -155,7 +180,9 @@ export function AppLayout() {
               Aegis runs entirely in your browser. No backend, no cloud
               inference.
             </p>
-            <p className="stripe-kicker">v0.1 · Devnet</p>
+            <p className="stripe-kicker">
+              v0.1 · {import.meta.env.VITE_SOLANA_NETWORK ?? "mainnet-beta"}
+            </p>
           </footer>
         </div>
       </div>

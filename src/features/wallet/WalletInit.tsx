@@ -78,7 +78,12 @@ export function WalletInit() {
               : "Refresh history"}
           </button>
           <p className="mt-1 text-sm font-light leading-relaxed text-body">
-            Wired for devnet. Mainnet toggle will live next to the RPC selector.
+            Connected to{" "}
+            <span className="font-mono text-xs">
+              {import.meta.env.VITE_SOLANA_NETWORK ?? "mainnet-beta"}
+            </span>
+            . Configure <span className="font-mono text-xs">VITE_SOLANA_RPC</span> in{" "}
+            <span className="font-mono text-xs">.env</span> to switch networks.
           </p>
         </div>
       </div>
