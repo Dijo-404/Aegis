@@ -44,6 +44,49 @@ graph TD
 
 Smaller models are downloaded from Hugging Face CDN on first use and cached in the browser's IndexedDB. The larger LLM runs locally via the Node.js backend.
 
+## Core Features
+
+### Sign Guard
+
+```mermaid
+graph TD
+    Input[Transaction Payload / QR Code] --> OCR[OCR via Tesseract.js]
+    OCR --> Text[Extracted Raw Text]
+    Text --> Solana[web3.js Deserialization]
+    Solana --> Context[Structured Context]
+    Context -.->|Request| LocalBackend[Backend: node-llama-cpp]
+    LocalBackend -.->|Response| Analysis[Risk Score & Summary]
+    Analysis --> Modal[Warning Modal]
+    Modal --> Action[User Sign or Reject]
+```
+
+### Voice Commander
+
+```mermaid
+graph TD
+    Voice[User Voice Input] --> Audio[Web Audio API]
+    Audio --> STT[Whisper STT via Transformers.js]
+    STT --> Transcript[Text Transcript]
+    Transcript --> Parser[Intent Parser]
+    Parser --> Intent[Parsed Intent: Action, Amount, Token]
+    Intent --> Builder[Transaction Builder]
+    Builder --> SignGuard[Sign Guard Pre-check]
+```
+
+### Portfolio Brain
+
+```mermaid
+graph TD
+    History[On-chain Transaction History] --> Parse[Parse into Natural Language]
+    Parse --> Embedder[MiniLM Embeddings via Transformers.js]
+    Embedder --> VectorDB[(Vectra Local DB)]
+    UserQuery[User Natural Language Query] --> QueryEmbed[Embed Query]
+    QueryEmbed --> VectorDB
+    VectorDB --> Results[Top-K Retrieved Transactions]
+    Results -.->|RAG Request| LocalBackend[Backend: node-llama-cpp]
+    LocalBackend -.->|Response| ChatUI[Streamed Answer to User]
+```
+
 ## Requirements
 
 - Node.js 18+
