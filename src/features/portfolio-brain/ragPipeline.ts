@@ -25,7 +25,8 @@ export async function queryPortfolio(
   const store = await loadVectorStore(address);
   if (!store.records.length) {
     return {
-      answer: "Your local index is empty. Build the wallet history index first.",
+      answer:
+        "Your local index is empty. Either you haven't built it yet, or your wallet has no transaction history. Refresh your history on the Wallet tab, then rebuild the index.",
       sources: [],
     };
   }
