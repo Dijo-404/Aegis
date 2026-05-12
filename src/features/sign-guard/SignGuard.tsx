@@ -23,28 +23,26 @@ export function SignGuard() {
     <SectionCard
       kicker="Sign Guard"
       title="Explain transactions before you sign"
-      description="OCR + local LLM analysis for Solana transaction payloads."
+      description="OCR + local LLM analysis for Solana transaction payloads. Nothing leaves the device."
     >
       <div className="grid gap-6 lg:grid-cols-[1.2fr_0.8fr]">
-        <div className="flex flex-col gap-4">
-          <label className="text-xs uppercase tracking-[0.3em] text-slate-500">
-            Transaction payload
-          </label>
+        <div className="flex flex-col gap-3">
+          <label className="stripe-label">Transaction payload</label>
           <textarea
-            className="min-h-[220px] rounded-2xl border border-slate-200 bg-white/90 p-4 text-sm text-ink focus:outline-none"
+            className="stripe-textarea min-h-[220px] font-mono text-sm leading-relaxed"
             placeholder="Paste the serialized transaction or OCR output..."
             value={rawText}
             onChange={(event) => setRawText(event.target.value)}
           />
           <div className="flex flex-wrap items-center gap-3">
             <button
-              className="rounded-xl bg-ink px-4 py-2 text-sm font-semibold text-white"
+              className="stripe-btn-primary"
               onClick={() => void explain({ rawText, walletAddress })}
               disabled={loading}
             >
               {loading ? "Analyzing..." : "Analyze transaction"}
             </button>
-            <label className="cursor-pointer rounded-xl border border-slate-200 bg-white px-4 py-2 text-sm font-semibold text-ink">
+            <label className="stripe-btn-neutral cursor-pointer">
               {isProcessing ? "Scanning..." : "Upload QR / screenshot"}
               <input
                 type="file"
@@ -59,8 +57,11 @@ export function SignGuard() {
           {analysis ? (
             <TxWarningModal analysis={analysis} onReject={reset} />
           ) : (
-            <div className="rounded-2xl border border-dashed border-slate-200 bg-white/70 p-6 text-sm text-slate-500">
-              Upload or paste a transaction to see the local risk summary.
+            <div className="stripe-dashed flex min-h-[220px] flex-col items-center justify-center rounded-md bg-purple/[0.02] p-6 text-center">
+              <p className="stripe-kicker mb-2">Awaiting input</p>
+              <p className="text-sm font-light leading-relaxed text-body">
+                Upload or paste a transaction to see the local risk summary.
+              </p>
             </div>
           )}
         </div>

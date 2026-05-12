@@ -7,8 +7,12 @@ import {
 } from "@solana/web3.js";
 import { logger } from "./logger";
 
-const rpcUrl =
-  import.meta.env.VITE_SOLANA_RPC ?? "https://api.devnet.solana.com";
+const rpcUrl = import.meta.env.VITE_SOLANA_RPC;
+if (!rpcUrl) {
+  throw new Error(
+    "VITE_SOLANA_RPC is not set. Copy .env.example to .env and configure your RPC endpoint.",
+  );
+}
 const connection = new Connection(rpcUrl, "confirmed");
 
 export const getConnection = () => connection;

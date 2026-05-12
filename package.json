@@ -9,16 +9,10 @@
     "dev": "concurrently \"pnpm run dev:frontend\" \"pnpm run dev:backend\"",
     "build": "vite build",
     "preview": "vite preview",
-    "start": "concurrently \"pnpm run preview\" \"pnpm run dev:backend\"",
-    "test": "vitest",
-    "models:download": "bash scripts/download-models.sh"
+    "test": "vitest"
   },
   "dependencies": {
-    "@qvac/embed-llamacpp": "file:./packages/qvac-embed-llamacpp",
-    "@qvac/llm-llamacpp": "file:./packages/qvac-llm-llamacpp",
-    "@qvac/ocr-onnx": "file:./packages/qvac-ocr-onnx",
-    "@qvac/sdk": "file:./packages/qvac-sdk",
-    "@qvac/transcription-whispercpp": "file:./packages/qvac-transcription-whispercpp",
+    "@huggingface/transformers": "^3.5.1",
     "@solana/spl-token": "^0.4.6",
     "@solana/web3.js": "^1.98.0",
     "@tether/wdk": "file:./packages/wdk",
@@ -27,6 +21,7 @@
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "react-router-dom": "^6.26.0",
+    "tesseract.js": "^5.1.1",
     "vectra": "^0.14.0",
     "zustand": "^4.5.5"
   },

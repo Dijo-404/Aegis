@@ -1,9 +1,16 @@
 import { WDK } from "@tether/wdk";
 import type { Transaction } from "@solana/web3.js";
 
+const rpcUrl = import.meta.env.VITE_SOLANA_RPC;
+if (!rpcUrl) {
+  throw new Error(
+    "VITE_SOLANA_RPC is not set. Copy .env.example to .env and configure your RPC endpoint.",
+  );
+}
+
 export const wdk = new WDK({
   network: "solana",
-  rpcUrl: import.meta.env.VITE_SOLANA_RPC ?? "https://api.devnet.solana.com",
+  rpcUrl,
   storage: "indexeddb",
   nonCustodial: true,
   usdtMint: import.meta.env.VITE_USDT_MINT,

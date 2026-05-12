@@ -1,4 +1,4 @@
-@import url("https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@500;700&display=swap");
 
 @tailwind base;
 @tailwind components;
@@ -6,55 +6,172 @@
 
 @layer base {
   :root {
-    --color-ink: #0b1220;
-    --color-accent: #0ea5a4;
-    --color-haze: #eef2ff;
-    --color-glow: #67e8f9;
-    --color-surface: #ffffff;
+    --color-purple: #533afd;
+    --color-purple-hover: #4434d4;
+    --color-purple-light: #b9b9f9;
+    --color-navy: #061b31;
+    --color-navy-brand: #1c1e54;
+    --color-label: #273951;
+    --color-body: #64748d;
+    --color-border: #e5edf5;
+    --shadow-elevated:
+      rgba(50, 50, 93, 0.25) 0px 30px 45px -30px,
+      rgba(0, 0, 0, 0.1) 0px 18px 36px -18px;
+    --shadow-standard: rgba(23, 23, 23, 0.08) 0px 15px 35px 0px;
+  }
+
+  html {
+    font-feature-settings:
+      "ss01" on,
+      "cv11" on;
   }
 
   body {
-    font-family: "Inter", "Segoe UI", ui-sans-serif, system-ui, sans-serif;
-    background:
-      radial-gradient(
-        1200px 600px at 20% -10%,
-        rgba(103, 232, 249, 0.35),
-        transparent 60%
-      ),
-      radial-gradient(
-        900px 480px at 90% 10%,
-        rgba(59, 130, 246, 0.18),
-        transparent 55%
-      ),
-      linear-gradient(180deg, #f8fafc 0%, #eef2ff 55%, #f8fafc 100%);
-    color: var(--color-ink);
+    font-family:
+      "Inter", "sohne-var", "SF Pro Display", ui-sans-serif, system-ui,
+      sans-serif;
+    font-weight: 300;
+    background: #ffffff;
+    color: var(--color-navy);
     min-height: 100vh;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    font-feature-settings:
+      "ss01" on,
+      "cv11" on;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    color: var(--color-navy);
+    font-weight: 300;
+    font-feature-settings:
+      "ss01" on,
+      "cv11" on;
+  }
+
+  code,
+  pre,
+  .tabular {
+    font-variant-numeric: tabular-nums;
+    font-feature-settings: "tnum" on;
+  }
+
+  *:focus-visible {
+    outline: 2px solid var(--color-purple);
+    outline-offset: 2px;
   }
 }
 
 @layer components {
-  .glass-panel {
-    @apply rounded-2xl border border-white/70 bg-white/75 p-6 shadow-glow backdrop-blur;
+  .stripe-card {
+    @apply rounded-md border border-border bg-white p-8 shadow-elevated;
   }
 
-  .nav-pill {
-    @apply rounded-full px-4 py-2 text-sm font-medium transition;
+  .stripe-card-tight {
+    @apply rounded border border-border bg-white p-5;
   }
 
-  .nav-pill-active {
-    @apply bg-ink text-white;
+  .stripe-card-ambient {
+    @apply rounded-md border border-border bg-white p-6 shadow-ambient;
   }
 
-  .nav-pill-idle {
-    @apply bg-white/70 text-ink hover:bg-white;
+  .stripe-btn-primary {
+    @apply rounded bg-purple px-4 py-2 text-base font-normal text-white transition-colors hover:bg-purple-hover focus:outline-none focus:ring-2 focus:ring-purple focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50;
   }
 
-  .status-pill {
-    @apply inline-flex items-center gap-2 rounded-full border border-white/70 bg-white/80 px-3 py-1 text-xs font-semibold uppercase tracking-wider text-ink;
+  .stripe-btn-ghost {
+    @apply rounded border border-border-purple bg-transparent px-4 py-2 text-base font-normal text-purple transition-colors hover:bg-purple/5 focus:outline-none focus:ring-2 focus:ring-purple focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50;
+  }
+
+  .stripe-btn-neutral {
+    @apply rounded border border-border bg-white px-4 py-2 text-base font-normal text-heading transition-colors hover:bg-slate-50 focus:outline-none focus:ring-2 focus:ring-purple focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50;
+  }
+
+  .stripe-input {
+    @apply w-full rounded border border-border bg-white px-3 py-2 text-base text-heading transition-colors placeholder:text-body focus:border-purple focus:outline-none focus:ring-1 focus:ring-purple;
+  }
+
+  .stripe-textarea {
+    @apply w-full rounded border border-border bg-white p-3 text-base text-heading transition-colors placeholder:text-body focus:border-purple focus:outline-none focus:ring-1 focus:ring-purple;
+  }
+
+  .stripe-label {
+    @apply text-sm font-normal text-label;
+  }
+
+  .stripe-kicker {
+    @apply font-mono text-xs font-medium uppercase tracking-wider text-body;
+  }
+
+  .stripe-badge-success {
+    @apply inline-flex items-center gap-1 rounded border px-1.5 py-px text-[10px] font-light;
+    background: rgba(21, 190, 83, 0.2);
+    color: #108c3d;
+    border-color: rgba(21, 190, 83, 0.4);
+  }
+
+  .stripe-badge-warning {
+    @apply inline-flex items-center gap-1 rounded border px-1.5 py-px text-[10px] font-light;
+    background: rgba(155, 104, 41, 0.12);
+    color: #9b6829;
+    border-color: rgba(155, 104, 41, 0.3);
+  }
+
+  .stripe-badge-danger {
+    @apply inline-flex items-center gap-1 rounded border px-1.5 py-px text-[10px] font-light;
+    background: rgba(234, 34, 97, 0.12);
+    color: #ea2261;
+    border-color: rgba(234, 34, 97, 0.3);
+  }
+
+  .stripe-badge-neutral {
+    @apply inline-flex items-center gap-1 rounded border border-border bg-white px-1.5 text-[11px] font-normal text-heading;
+  }
+
+  .stripe-nav-link {
+    @apply rounded-md px-3 py-1.5 text-sm font-normal text-heading transition-colors hover:bg-slate-50;
+  }
+
+  .stripe-nav-link-active {
+    @apply rounded-md bg-purple/10 px-3 py-1.5 text-sm font-normal text-purple;
+  }
+
+  .stripe-dashed {
+    border: 1px dashed #362baa;
+  }
+
+  .stripe-section-dark {
+    @apply rounded-lg border border-white/10 bg-navy-brand p-8 text-white;
   }
 }
 
 @layer utilities {
+  .tracking-display-hero {
+    letter-spacing: -1.4px;
+  }
+  .tracking-display-large {
+    letter-spacing: -0.96px;
+  }
+  .tracking-section {
+    letter-spacing: -0.64px;
+  }
+  .tracking-subheading-lg {
+    letter-spacing: -0.26px;
+  }
+  .tracking-subheading {
+    letter-spacing: -0.22px;
+  }
+
+  .tabular-nums {
+    font-variant-numeric: tabular-nums;
+    font-feature-settings: "tnum" on;
+  }
+
   .float-in {
     animation: floatIn 600ms ease both;
   }
@@ -67,7 +184,7 @@
 @keyframes floatIn {
   from {
     opacity: 0;
-    transform: translateY(12px);
+    transform: translateY(8px);
   }
   to {
     opacity: 1;
